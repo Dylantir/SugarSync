@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tienda de Barrio La Económica</title>
+  <title>Tienda de Barrio La Económica - Golosinas</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -63,7 +63,7 @@
     label, h3 {
       color: #00ccff;
     }
-    input, select {
+    input {
       width: 100%;
       padding: 8px;
       margin: 6px 0 12px;
@@ -85,6 +85,21 @@
     }
     button:hover {
       background-color: #cc0000;
+    }
+    #resultados button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 6px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      background: #2b2b2b;
+      color: #fff;
+      cursor: pointer;
+    }
+    #resultados button:hover {
+      background: #3a3a3a;
     }
     table {
       width: 100%;
@@ -139,17 +154,11 @@
   <div class="main-content">
     <!-- Sección principal -->
     <div class="container" id="inicio">
-      <h1>Tienda de Barrio "La Económica"</h1>
+      <h1>Tienda de Golosinas "La Económica"</h1>
 
-      <h3>Selecciona un producto</h3>
-      <select id="producto">
-        <option value="">-- Selecciona --</option>
-        <option value="Gansito-2500">1. Gansito - $2500</option>
-        <option value="Chocorramo-3000">2. Chocorramo - $3000</option>
-        <option value="Gala-3500">3. Gala - $3500</option>
-        <option value="Pony Malta-2000">4. Pony Malta - $2000</option>
-        <option value="Papas Margarita-1800">5. Papas Margarita - $1800</option>
-      </select>
+      <h3>Buscar producto</h3>
+      <input type="text" id="busqueda" placeholder="Escribe el nombre del producto...">
+      <div id="resultados"></div>
 
       <h3>Cantidad</h3>
       <input type="number" id="cantidad" placeholder="Ej: 3"/>
@@ -182,32 +191,178 @@
   </footer>
 
   <script>
+    // 🔹 Catálogo centrado en golosinas/snacks (más de 100 items)
+    const catalogo = [
+      { nombre: "Gansito", precio: 2500 },
+      { nombre: "Gansito Mini", precio: 1200 },
+      { nombre: "Chocorramo", precio: 3000 },
+      { nombre: "Chocorramo Mini", precio: 1800 },
+      { nombre: "Gala", precio: 3500 },
+      { nombre: "Jet", precio: 800 },
+      { nombre: "Mini Jet", precio: 450 },
+      { nombre: "Bon Bon Bum", precio: 400 },
+      { nombre: "Rocklets", precio: 900 },
+      { nombre: "M&M's", precio: 1200 },
+      { nombre: "Chocolatina Jet", precio: 1100 },
+      { nombre: "Chocolisto Mini", precio: 700 },
+      { nombre: "Bocadillo", precio: 900 },
+      { nombre: "Bocadillo con Queso", precio: 1000 },
+      { nombre: "Bon o Bon", precio: 850 },
+      { nombre: "Bon o Bon Doble", precio: 1400 },
+      { nombre: "Choclitos", precio: 950 },
+      { nombre: "Chocokrispis", precio: 3000 },
+      { nombre: "Chocapic", precio: 3500 },
+      { nombre: "Toblerone Mini", precio: 2200 },
+      { nombre: "Hershey's Mini", precio: 2000 },
+      { nombre: "Oreo Pack", precio: 2800 },
+      { nombre: "Oreo Mini", precio: 900 },
+      { nombre: "Chips Ahoy", precio: 3000 },
+      { nombre: "Galletas Festival", precio: 2800 },
+      { nombre: "Galletas Ducales", precio: 2400 },
+      { nombre: "Gomitas Salvavidas", precio: 1500 },
+      { nombre: "Gomitas Colores", precio: 1300 },
+      { nombre: "Gomitas Ositos", precio: 1400 },
+      { nombre: "Pica Pica", precio: 600 },
+      { nombre: "Pica Roca", precio: 700 },
+      { nombre: "Platanitos", precio: 2200 },
+      { nombre: "Doritos", precio: 2300 },
+      { nombre: "Papas Lays", precio: 3500 },
+      { nombre: "Tostacos", precio: 2200 },
+      { nombre: "Detodito", precio: 2800 },
+      { nombre: "Detodito BBQ", precio: 2900 },
+      { nombre: "Detodito Limón", precio: 2900 },
+      { nombre: "Trululu", precio: 1200 },
+      { nombre: "Trululu Ácido", precio: 1300 },
+      { nombre: "Trululu Corazones", precio: 1300 },
+      { nombre: "Trululu Gusanos", precio: 1400 },
+      { nombre: "Frunas", precio: 700 },
+      { nombre: "Frunas Ácidas", precio: 750 },
+      { nombre: "Chicle Trident", precio: 1500 },
+      { nombre: "Chicle Bomba", precio: 800 },
+      { nombre: "Tic Tac", precio: 1200 },
+      { nombre: "Halls", precio: 1100 },
+      { nombre: "Mentas", precio: 900 },
+      { nombre: "Caramelos Bony", precio: 600 },
+      { nombre: "Caramelos Frutales", precio: 700 },
+      { nombre: "Caramelos de Miel", precio: 800 },
+      { nombre: "Chocolatina Corona", precio: 5200 },
+      { nombre: "Chocolate Corona Mini", precio: 1200 },
+      { nombre: "Milo Barra", precio: 1500 },
+      { nombre: "Milo Ready to Drink", precio: 2500 },
+      { nombre: "Chocolatina Jet Wafer", precio: 1300 },
+      { nombre: "Chocobreak", precio: 1100 },
+      { nombre: "Choco Wafer", precio: 1250 },
+      { nombre: "Chocoboom", precio: 1700 },
+      { nombre: "Choco Frunas", precio: 1100 },
+      { nombre: "Mini Oreo", precio: 700 },
+      { nombre: "Maní Salado", precio: 3000 },
+      { nombre: "Maní Limón", precio: 3200 },
+      { nombre: "Maní Japones", precio: 3400 },
+      { nombre: "Paleta Payaso", precio: 900 },
+      { nombre: "Paleta de Caramelo", precio: 600 },
+      { nombre: "Paleta Piruleta", precio: 700 },
+      { nombre: "Barras de Caramelo", precio: 800 },
+      { nombre: "Arequipe Alpina Mini", precio: 900 },
+      { nombre: "Arequipe Alpina Mediano", precio: 2500 },
+      { nombre: "Arequipe Alpina Grande", precio: 4200 },
+      { nombre: "Ponqué Ramitos", precio: 4200 },
+      { nombre: "Pan de Vainilla Mini", precio: 1200 },
+      { nombre: "Buñuelos x6", precio: 6200 },
+      { nombre: "Empanadas x3", precio: 3800 },
+      { nombre: "Mantequilla Rama Mini", precio: 3200 },
+      { nombre: "Yogurt Drink Mini", precio: 1200 },
+      { nombre: "Yogurt Alpina 1L", precio: 5800 },
+      { nombre: "Chocolate Negro Mini", precio: 1400 },
+      { nombre: "Caramelos Toffee", precio: 1100 },
+      { nombre: "Chocoramo Doble", precio: 3800 },
+      { nombre: "Chocorramo XXL", precio: 4800 },
+      { nombre: "Chocorramo Mini Pack", precio: 2200 },
+      { nombre: "Jet Mix", precio: 900 },
+      { nombre: "Jet Maní", precio: 1100 },
+      { nombre: "Rocklets Bolsa", precio: 1600 },
+      { nombre: "M&M's Bolsa", precio: 1800 },
+      { nombre: "Galletas Chocoso", precio: 2500 },
+      { nombre: "Galletas Chokis", precio: 2600 },
+      { nombre: "Cerealitas Dulces", precio: 900 },
+      { nombre: "Cerealitas Saladas", precio: 900 },
+      { nombre: "Tortilla de Maíz Mini", precio: 800 },
+      { nombre: "Palomitas Caramelo", precio: 1400 },
+      { nombre: "Palomitas Sal", precio: 1200 },
+      { nombre: "Gelatina Golosa", precio: 700 },
+      { nombre: "Jugo Hit Mango 250ml", precio: 1200 },
+      { nombre: "Jugo Hit Mora 250ml", precio: 1200 },
+      { nombre: "Coca Cola 350ml (mini)", precio: 2200 },
+      { nombre: "Agua 600ml", precio: 1500 },
+      { nombre: "Red Bull 250ml", precio: 8500 },
+      { nombre: "Chocolate relleno Mini", precio: 1300 },
+      { nombre: "Gomitas Corazón", precio: 1400 },
+      { nombre: "Gomitas Paleta", precio: 1500 },
+      { nombre: "Pica Pica Sour", precio: 800 },
+      { nombre: "Caramelos Menta", precio: 900 },
+      { nombre: "Chocolatina Mini Surtida", precio: 1000 }
+    ];
+
     let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     let historial = JSON.parse(localStorage.getItem('historial')) || [];
+    let contadorVentas = JSON.parse(localStorage.getItem('contadorVentas')) || 0;
+    let productoSeleccionado = null;
 
     window.onload = () => mostrarCarrito();
 
     function guardarDatos() {
       localStorage.setItem('carrito', JSON.stringify(carrito));
       localStorage.setItem('historial', JSON.stringify(historial));
+      localStorage.setItem('contadorVentas', JSON.stringify(contadorVentas));
+    }
+
+    // 🔍 Búsqueda de productos por nombre (ignora mayúsc/minúsc)
+    document.getElementById('busqueda').addEventListener('input', (e) => {
+      const texto = e.target.value.toLowerCase().trim();
+      const resultados = catalogo.filter(p => p.nombre.toLowerCase().includes(texto));
+      const div = document.getElementById('resultados');
+      div.innerHTML = "";
+
+      // mostrar hasta 12 coincidencias
+      resultados.slice(0, 12).forEach((p, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = `${p.nombre} - $${p.precio.toLocaleString('es-CO')}`;
+        btn.onclick = () => seleccionarProducto(p);
+        div.appendChild(btn);
+      });
+
+      // si no hay resultados y el campo no está vacío, mostrar mensaje
+      if (texto.length > 0 && resultados.length === 0) {
+        const p = document.createElement('p');
+        p.style.color = '#ffcc66';
+        p.textContent = 'No se encontraron coincidencias.';
+        div.appendChild(p);
+      }
+    });
+
+    function seleccionarProducto(p) {
+      productoSeleccionado = p;
+      document.getElementById('busqueda').value = p.nombre;
+      document.getElementById('resultados').innerHTML = "";
+      // opcional: enfocar cantidad
+      document.getElementById('cantidad').focus();
     }
 
     function agregarProducto() {
-      const productoSelect = document.getElementById('producto').value;
       const cantidad = parseInt(document.getElementById('cantidad').value);
 
-      if (!productoSelect || isNaN(cantidad) || cantidad <= 0) {
+      if (!productoSeleccionado || isNaN(cantidad) || cantidad <= 0) {
         alert("Por favor selecciona un producto y una cantidad válida.");
         return;
       }
 
-      const [nombre, precioStr] = productoSelect.split("-");
-      const precio = parseFloat(precioStr);
-      const total = cantidad * precio;
-
-      carrito.push({ nombre, cantidad, precio, total });
+      const total = cantidad * productoSeleccionado.precio;
+      carrito.push({ nombre: productoSeleccionado.nombre, cantidad, precio: productoSeleccionado.precio, total });
       guardarDatos();
       mostrarCarrito();
+      document.getElementById('cantidad').value = "";
+      // limpiar selección para evitar agregar repetido accidentalmente
+      productoSeleccionado = null;
+      document.getElementById('busqueda').value = "";
     }
 
     function mostrarCarrito() {
@@ -221,7 +376,7 @@
       });
 
       const totalGeneral = carrito.reduce((sum, p) => sum + p.total, 0);
-      document.getElementById('totalCompra').innerText = 
+      document.getElementById('totalCompra').innerText =
         "Total de la compra: $" + totalGeneral.toLocaleString('es-CO');
     }
 
@@ -237,11 +392,16 @@
         return;
       }
 
+      contadorVentas++;
+      // asignar el mismo número de venta a todos los items de esta compra
+      carrito.forEach(p => p.numeroVenta = contadorVentas);
+
+      // añadimos la compra al historial manteniendo agrupación (cada item con numeroVenta)
       historial.push(...carrito);
       carrito = [];
       guardarDatos();
       mostrarCarrito();
-      alert("Compra registrada con éxito.");
+      alert(`Compra registrada con éxito. Número de venta: #${contadorVentas}`);
     }
 
     function mostrarSeccion(seccion) {
@@ -261,10 +421,11 @@
       }
 
       let html = `<h3>Historial de Compras</h3>
-      <table><tr><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th></tr>`;
+      <table><tr><th>N° Venta</th><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th></tr>`;
 
       historial.forEach(p => {
         html += `<tr>
+          <td>#${p.numeroVenta || '—'}</td>
           <td>${p.nombre}</td>
           <td>${p.cantidad}</td>
           <td>$${p.precio.toLocaleString('es-CO')}</td>
@@ -280,20 +441,28 @@
       const ctx = document.getElementById('graficoVentas');
       Chart.getChart(ctx)?.destroy();
 
-      const nombres = [];
-      const totales = [];
-
+      // Agregar totales por producto
+      const mapa = {};
       historial.forEach(p => {
-        const index = nombres.indexOf(p.nombre);
-        if (index === -1) {
-          nombres.push(p.nombre);
-          totales.push(p.total);
-        } else {
-          totales[index] += p.total;
-        }
+        if (!mapa[p.nombre]) mapa[p.nombre] = 0;
+        mapa[p.nombre] += p.total;
       });
 
-      new Chart(ctx, {
+      const nombres = Object.keys(mapa);
+      const totales = Object.values(mapa);
+
+      // Si no hay datos mostrar mensaje
+      if (nombres.length === 0) {
+        document.getElementById('seccionGraficas').innerHTML = '<h2>Gráficas de Ventas</h2><p style="color:yellow;">No hay ventas para graficar.</p>';
+        return;
+      } else {
+        // restaurar canvas si fue reemplazado
+        document.getElementById('seccionGraficas').innerHTML = `<h2>Gráficas de Ventas</h2><canvas id="graficoVentas"></canvas>`;
+      }
+
+      const ctx2 = document.getElementById('graficoVentas');
+
+      new Chart(ctx2, {
         type: 'bar',
         data: {
           labels: nombres,
@@ -304,7 +473,10 @@
           }]
         },
         options: {
-          scales: { y: { beginAtZero: true } }
+          scales: { y: { beginAtZero: true } },
+          plugins: {
+            legend: { display: false }
+          }
         }
       });
     }
