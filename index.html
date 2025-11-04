@@ -55,6 +55,24 @@
       max-height: 300px;
       margin-top: 30px;
     }
+    /* lista de sugerencias */
+    #listaSugerencias {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      max-height: 150px;
+      overflow-y: auto;
+      background: white;
+      position: absolute;
+      width: 300px;
+      z-index: 100;
+    }
+    #listaSugerencias div {
+      padding: 8px;
+      cursor: pointer;
+    }
+    #listaSugerencias div:hover {
+      background-color: #ffe6f0;
+    }
   </style>
 </head>
 <body>
@@ -62,7 +80,10 @@
   <h1>🍬 Tienda de Golosinas 🍭</h1>
   <div class="contenedor">
     <h3>Registrar Venta</h3>
-    <input type="text" id="nombreProducto" placeholder="Nombre del producto (ej: Gansito)">
+    <div style="position: relative;">
+      <input type="text" id="nombreProducto" placeholder="Nombre del producto (ej: Gansito)" onkeyup="mostrarSugerencias()">
+      <div id="listaSugerencias"></div>
+    </div>
     <input type="number" id="cantidad" placeholder="Cantidad" min="1">
     <button onclick="agregarProducto()">Agregar producto</button>
     <button onclick="finalizarVenta()">Finalizar venta</button>
@@ -112,9 +133,31 @@
     };
 
     let numeroVenta = 1;
-    let historial = [];
+    let historial = JSON.parse(localStorage.getItem("historial")) || [];
 
-    // ======= Función para agregar producto =======
+    // ======= Mostrar sugerencias =======
+    function mostrarSugerencias() {
+      const input = document.getElementById("nombreProducto");
+      const sugerencias = document.getElementById("listaSugerencias");
+      const texto = input.value.trim().toLowerCase();
+      sugerencias.innerHTML = "";
+
+      if (texto === "") return;
+
+      const coincidencias = Object.keys(productos).filter(p => p.includes(texto));
+
+      coincidencias.forEach(p => {
+        const div = document.createElement("div");
+        div.textContent = `${p} - $${productos[p].toLocaleString("es-CO")}`;
+        div.onclick = () => {
+          input.value = p;
+          sugerencias.innerHTML = "";
+        };
+        sugerencias.appendChild(div);
+      });
+    }
+
+    // ======= Agregar producto =======
     function agregarProducto() {
       const nombre = document.getElementById('nombreProducto').value.trim().toLowerCase();
       const cantidad = parseInt(document.getElementById('cantidad').value);
@@ -132,12 +175,11 @@
       const precio = productos[nombre];
       const total = precio * cantidad;
       historial.push({ numeroVenta, nombre, cantidad, precio, total });
+      localStorage.setItem("historial", JSON.stringify(historial));
 
       mensaje.innerHTML = `<p style="color:green">✅ ${cantidad} ${nombre}(s) agregado(s) a la venta #${numeroVenta}</p>`;
-
       document.getElementById('nombreProducto').value = '';
       document.getElementById('cantidad').value = '';
-
       mostrarTabla();
       mostrarGrafico();
     }
@@ -207,6 +249,9 @@
         }
       });
     }
+
+    mostrarTabla();
+    mostrarGrafico();
   </script>
 </body>
 </html>
