@@ -1,422 +1,159 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tienda de Barrio La Económica - Golosinas</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <title>Tienda de Golosinas</title>
   <style>
     body {
-      background-color: #000;
-      color: #fff;
       font-family: Arial, sans-serif;
+      background: #fff7f8;
+      color: #333;
       margin: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    .sidebar {
-      width: 140px;
-      background-color: #1c1c1c;
       padding: 20px;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      border-right: 3px solid red;
-    }
-    .sidebar h2 {
-      color: white;
-      text-align: center;
-    }
-    .sidebar button {
-      background-color: red;
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-    .sidebar button:hover {
-      background-color: #cc0000;
-    }
-    .main-content {
-      margin-left: 170px;
-      padding: 20px;
-      flex: 1;
-    }
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background-color: #1c1c1c;
-      padding: 20px;
-      border-radius: 10px;
     }
     h1 {
-      color: red;
       text-align: center;
+      color: #e60073;
     }
-    label, h3 {
-      color: #00ccff;
+    .contenedor {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin: 6px 0 12px;
-      border: none;
-      border-radius: 5px;
-    }
-    .btn-center {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
     button {
-      background-color: red;
-      border: none;
+      background: #ff4da6;
       color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #cc0000;
-    }
-    #resultados button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      margin: 6px 0;
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      background: #2b2b2b;
-      color: #fff;
-      cursor: pointer;
-    }
-    #resultados button:hover {
-      background: #3a3a3a;
+      background: #ff1a8c;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #333;
       margin-top: 20px;
     }
     th, td {
-      border: 1px solid #fff;
-      padding: 10px;
+      border: 1px solid #ddd;
+      padding: 8px;
       text-align: center;
     }
     th {
-      background-color: red;
+      background: #ffb3d9;
     }
-    td {
-      background-color: #444;
-    }
-    footer {
-      text-align: center;
-      padding: 15px;
-      background-color: #111;
-      color: #999;
-      font-size: 14px;
-      border-top: 2px solid red;
-    }
-    @media screen and (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        justify-content: center;
-        border-right: none;
-        border-bottom: 4px solid red;
-      }
-      .main-content {
-        margin-left: 0;
-        margin-top: 140px;
-      }
+    canvas {
+      width: 100%;
+      max-height: 300px;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
 
-  <div class="sidebar">
-    <h2>Menú</h2>
-    <button onclick="mostrarSeccion('inicio')">Inicio</button>
-    <button onclick="mostrarSeccion('tabla')">Tabla de Compras</button>
-    <button onclick="mostrarSeccion('graficas')">Gráficas</button>
+  <h1>🍬 Tienda de Golosinas 🍭</h1>
+  <div class="contenedor">
+    <h3>Registrar Venta</h3>
+    <input type="text" id="nombreProducto" placeholder="Nombre del producto (ej: Gansito)">
+    <input type="number" id="cantidad" placeholder="Cantidad" min="1">
+    <button onclick="agregarProducto()">Agregar producto</button>
+    <button onclick="finalizarVenta()">Finalizar venta</button>
+
+    <div id="mensaje"></div>
+
+    <div id="tablaCompras"></div>
+
+    <canvas id="graficoVentas"></canvas>
   </div>
 
-  <div class="main-content">
-    <!-- Sección principal -->
-    <div class="container" id="inicio">
-      <h1>Tienda de Golosinas "La Económica"</h1>
-
-      <h3>Buscar producto</h3>
-      <input type="text" id="busqueda" placeholder="Escribe el nombre del producto...">
-      <div id="resultados"></div>
-
-      <h3>Cantidad</h3>
-      <input type="number" id="cantidad" placeholder="Ej: 3"/>
-
-      <div class="btn-center">
-        <button onclick="agregarProducto()">Agregar al carrito</button>
-      </div>
-
-      <div id="listaCompras"></div>
-
-      <div class="btn-center">
-        <button onclick="finalizarCompra()">Finalizar compra</button>
-      </div>
-
-      <h3 id="totalCompra"></h3>
-    </div>
-
-    <!-- Sección tabla -->
-    <div class="container" id="tablaCompras" style="display:none;"></div>
-
-    <!-- Sección gráficas -->
-    <div class="container" id="seccionGraficas" style="display:none;">
-      <h2>Gráficas de Ventas</h2>
-      <canvas id="graficoVentas"></canvas>
-    </div>
-  </div>
-
-  <footer>
-    Proyecto desarrollado por Dylan Tirado — Ingeniería de Sistemas (CUN)
-  </footer>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // 🔹 Catálogo centrado en golosinas/snacks (más de 100 items)
-    const catalogo = [
-      { nombre: "Gansito", precio: 2500 },
-      { nombre: "Gansito Mini", precio: 1200 },
-      { nombre: "Chocorramo", precio: 3000 },
-      { nombre: "Chocorramo Mini", precio: 1800 },
-      { nombre: "Gala", precio: 3500 },
-      { nombre: "Jet", precio: 800 },
-      { nombre: "Mini Jet", precio: 450 },
-      { nombre: "Bon Bon Bum", precio: 400 },
-      { nombre: "Rocklets", precio: 900 },
-      { nombre: "M&M's", precio: 1200 },
-      { nombre: "Chocolatina Jet", precio: 1100 },
-      { nombre: "Chocolisto Mini", precio: 700 },
-      { nombre: "Bocadillo", precio: 900 },
-      { nombre: "Bocadillo con Queso", precio: 1000 },
-      { nombre: "Bon o Bon", precio: 850 },
-      { nombre: "Bon o Bon Doble", precio: 1400 },
-      { nombre: "Choclitos", precio: 950 },
-      { nombre: "Chocokrispis", precio: 3000 },
-      { nombre: "Chocapic", precio: 3500 },
-      { nombre: "Toblerone Mini", precio: 2200 },
-      { nombre: "Hershey's Mini", precio: 2000 },
-      { nombre: "Oreo Pack", precio: 2800 },
-      { nombre: "Oreo Mini", precio: 900 },
-      { nombre: "Chips Ahoy", precio: 3000 },
-      { nombre: "Galletas Festival", precio: 2800 },
-      { nombre: "Galletas Ducales", precio: 2400 },
-      { nombre: "Gomitas Salvavidas", precio: 1500 },
-      { nombre: "Gomitas Colores", precio: 1300 },
-      { nombre: "Gomitas Ositos", precio: 1400 },
-      { nombre: "Pica Pica", precio: 600 },
-      { nombre: "Pica Roca", precio: 700 },
-      { nombre: "Platanitos", precio: 2200 },
-      { nombre: "Doritos", precio: 2300 },
-      { nombre: "Papas Lays", precio: 3500 },
-      { nombre: "Tostacos", precio: 2200 },
-      { nombre: "Detodito", precio: 2800 },
-      { nombre: "Detodito BBQ", precio: 2900 },
-      { nombre: "Detodito Limón", precio: 2900 },
-      { nombre: "Trululu", precio: 1200 },
-      { nombre: "Trululu Ácido", precio: 1300 },
-      { nombre: "Trululu Corazones", precio: 1300 },
-      { nombre: "Trululu Gusanos", precio: 1400 },
-      { nombre: "Frunas", precio: 700 },
-      { nombre: "Frunas Ácidas", precio: 750 },
-      { nombre: "Chicle Trident", precio: 1500 },
-      { nombre: "Chicle Bomba", precio: 800 },
-      { nombre: "Tic Tac", precio: 1200 },
-      { nombre: "Halls", precio: 1100 },
-      { nombre: "Mentas", precio: 900 },
-      { nombre: "Caramelos Bony", precio: 600 },
-      { nombre: "Caramelos Frutales", precio: 700 },
-      { nombre: "Caramelos de Miel", precio: 800 },
-      { nombre: "Chocolatina Corona", precio: 5200 },
-      { nombre: "Chocolate Corona Mini", precio: 1200 },
-      { nombre: "Milo Barra", precio: 1500 },
-      { nombre: "Milo Ready to Drink", precio: 2500 },
-      { nombre: "Chocolatina Jet Wafer", precio: 1300 },
-      { nombre: "Chocobreak", precio: 1100 },
-      { nombre: "Choco Wafer", precio: 1250 },
-      { nombre: "Chocoboom", precio: 1700 },
-      { nombre: "Choco Frunas", precio: 1100 },
-      { nombre: "Mini Oreo", precio: 700 },
-      { nombre: "Maní Salado", precio: 3000 },
-      { nombre: "Maní Limón", precio: 3200 },
-      { nombre: "Maní Japones", precio: 3400 },
-      { nombre: "Paleta Payaso", precio: 900 },
-      { nombre: "Paleta de Caramelo", precio: 600 },
-      { nombre: "Paleta Piruleta", precio: 700 },
-      { nombre: "Barras de Caramelo", precio: 800 },
-      { nombre: "Arequipe Alpina Mini", precio: 900 },
-      { nombre: "Arequipe Alpina Mediano", precio: 2500 },
-      { nombre: "Arequipe Alpina Grande", precio: 4200 },
-      { nombre: "Ponqué Ramitos", precio: 4200 },
-      { nombre: "Pan de Vainilla Mini", precio: 1200 },
-      { nombre: "Buñuelos x6", precio: 6200 },
-      { nombre: "Empanadas x3", precio: 3800 },
-      { nombre: "Mantequilla Rama Mini", precio: 3200 },
-      { nombre: "Yogurt Drink Mini", precio: 1200 },
-      { nombre: "Yogurt Alpina 1L", precio: 5800 },
-      { nombre: "Chocolate Negro Mini", precio: 1400 },
-      { nombre: "Caramelos Toffee", precio: 1100 },
-      { nombre: "Chocoramo Doble", precio: 3800 },
-      { nombre: "Chocorramo XXL", precio: 4800 },
-      { nombre: "Chocorramo Mini Pack", precio: 2200 },
-      { nombre: "Jet Mix", precio: 900 },
-      { nombre: "Jet Maní", precio: 1100 },
-      { nombre: "Rocklets Bolsa", precio: 1600 },
-      { nombre: "M&M's Bolsa", precio: 1800 },
-      { nombre: "Galletas Chocoso", precio: 2500 },
-      { nombre: "Galletas Chokis", precio: 2600 },
-      { nombre: "Cerealitas Dulces", precio: 900 },
-      { nombre: "Cerealitas Saladas", precio: 900 },
-      { nombre: "Tortilla de Maíz Mini", precio: 800 },
-      { nombre: "Palomitas Caramelo", precio: 1400 },
-      { nombre: "Palomitas Sal", precio: 1200 },
-      { nombre: "Gelatina Golosa", precio: 700 },
-      { nombre: "Jugo Hit Mango 250ml", precio: 1200 },
-      { nombre: "Jugo Hit Mora 250ml", precio: 1200 },
-      { nombre: "Coca Cola 350ml (mini)", precio: 2200 },
-      { nombre: "Agua 600ml", precio: 1500 },
-      { nombre: "Red Bull 250ml", precio: 8500 },
-      { nombre: "Chocolate relleno Mini", precio: 1300 },
-      { nombre: "Gomitas Corazón", precio: 1400 },
-      { nombre: "Gomitas Paleta", precio: 1500 },
-      { nombre: "Pica Pica Sour", precio: 800 },
-      { nombre: "Caramelos Menta", precio: 900 },
-      { nombre: "Chocolatina Mini Surtida", precio: 1000 }
-    ];
+    // ======= Datos iniciales =======
+    const productos = {
+      "gansito": 2500, "chocorramo": 3000, "galleta festival": 1200,
+      "galleta oreo": 1500, "jet": 1000, "bon bon bum": 600, "milky way": 2800,
+      "snickers": 2700, "milhoja": 3500, "chicle trident": 800, "chicle bubbaloo": 500,
+      "ponymalta": 2500, "postobon manzana": 2000, "coca cola": 2500,
+      "agua cristal": 1500, "papas margarita": 2500, "detodito": 3000,
+      "platanitos": 2200, "galleta club social": 1500, "submarino": 2500,
+      "arequipe alpina": 2000, "yogurt alpina": 2500, "bocadillo veleño": 800,
+      "bocadillo con queso": 1500, "chocobreak": 1000, "chocoso": 1200,
+      "chocojet": 1300, "quipitos": 900, "crispeta": 2000, "pirulin": 1800,
+      "supercoco": 600, "bubaloo": 500, "menta": 300, "gomitas fini": 2500,
+      "gomitas trululu": 2300, "barrilete": 1500, "galleta ducales": 2000,
+      "galleta soda": 1500, "frunas": 400, "bocadillo rollo": 1000,
+      "browni": 3000, "chocolate jet": 1200, "ponque ramo": 2800,
+      "pastel gloria": 2700, "bocadillo ranchero": 800, "yupi": 1800,
+      "galleta chokis": 2000, "choco krispis": 3500, "oreo doble crema": 1800,
+      "nucita": 1200, "chocoboom": 1000, "milkybar": 2000, "m&m": 2500,
+      "hersheys": 3000, "trululu": 1000, "barrilete surtido": 1600,
+      "chocoramo mini": 1800, "galleta wafer": 1000, "chocolate corona": 1500,
+      "yogurt kumis": 2300, "gomitas ositos": 2000, "jugo hit": 2200,
+      "jugo del valle": 2000, "agua panela": 1200, "bocadillo lonja": 700,
+      "manimoto": 1500, "mani salado": 1000, "mani japones": 1200,
+      "mani dulce": 1200, "tostacos": 2500, "cheetos": 2500,
+      "doritos": 2500, "lays": 2500, "tosti arepa": 2000, "achiras": 1500,
+      "rosquitas": 1500, "ponque gala": 2800, "ponque choco gala": 3000,
+      "alpinette": 3500, "maxibon": 4000, "chocorramo mini": 1800,
+      "mermelada mora": 1800, "mermelada fresa": 1800, "colombina": 1000,
+      "bombon": 600, "caramelo": 500, "tostones": 2000, "ponymalta mini": 1800,
+      "ponymalta lata": 2500, "coca cola lata": 2500, "hit caja": 2000,
+      "leche alpina": 2500, "almojabana": 2000, "empanada": 1800,
+      "dona ramo": 3000, "brownie choco": 3500, "cereal bar": 2000,
+      "chocolatina jet": 1200, "pan bimbo": 3500, "galleta festival mini": 1000
+    };
 
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    let historial = JSON.parse(localStorage.getItem('historial')) || [];
-    let contadorVentas = JSON.parse(localStorage.getItem('contadorVentas')) || 0;
-    let productoSeleccionado = null;
+    let numeroVenta = 1;
+    let historial = [];
 
-    window.onload = () => mostrarCarrito();
-
-    function guardarDatos() {
-      localStorage.setItem('carrito', JSON.stringify(carrito));
-      localStorage.setItem('historial', JSON.stringify(historial));
-      localStorage.setItem('contadorVentas', JSON.stringify(contadorVentas));
-    }
-
-    // 🔍 Búsqueda de productos por nombre (ignora mayúsc/minúsc)
-    document.getElementById('busqueda').addEventListener('input', (e) => {
-      const texto = e.target.value.toLowerCase().trim();
-      const resultados = catalogo.filter(p => p.nombre.toLowerCase().includes(texto));
-      const div = document.getElementById('resultados');
-      div.innerHTML = "";
-
-      // mostrar hasta 12 coincidencias
-      resultados.slice(0, 12).forEach((p, i) => {
-        const btn = document.createElement('button');
-        btn.textContent = `${p.nombre} - $${p.precio.toLocaleString('es-CO')}`;
-        btn.onclick = () => seleccionarProducto(p);
-        div.appendChild(btn);
-      });
-
-      // si no hay resultados y el campo no está vacío, mostrar mensaje
-      if (texto.length > 0 && resultados.length === 0) {
-        const p = document.createElement('p');
-        p.style.color = '#ffcc66';
-        p.textContent = 'No se encontraron coincidencias.';
-        div.appendChild(p);
-      }
-    });
-
-    function seleccionarProducto(p) {
-      productoSeleccionado = p;
-      document.getElementById('busqueda').value = p.nombre;
-      document.getElementById('resultados').innerHTML = "";
-      // opcional: enfocar cantidad
-      document.getElementById('cantidad').focus();
-    }
-
+    // ======= Función para agregar producto =======
     function agregarProducto() {
+      const nombre = document.getElementById('nombreProducto').value.trim().toLowerCase();
       const cantidad = parseInt(document.getElementById('cantidad').value);
+      const mensaje = document.getElementById('mensaje');
 
-      if (!productoSeleccionado || isNaN(cantidad) || cantidad <= 0) {
-        alert("Por favor selecciona un producto y una cantidad válida.");
+      if (!productos[nombre]) {
+        mensaje.innerHTML = `<p style="color:red">❌ Producto no encontrado. Intenta con otro nombre.</p>`;
+        return;
+      }
+      if (!cantidad || cantidad <= 0) {
+        mensaje.innerHTML = `<p style="color:red">❌ Cantidad inválida.</p>`;
         return;
       }
 
-      const total = cantidad * productoSeleccionado.precio;
-      carrito.push({ nombre: productoSeleccionado.nombre, cantidad, precio: productoSeleccionado.precio, total });
-      guardarDatos();
-      mostrarCarrito();
-      document.getElementById('cantidad').value = "";
-      // limpiar selección para evitar agregar repetido accidentalmente
-      productoSeleccionado = null;
-      document.getElementById('busqueda').value = "";
+      const precio = productos[nombre];
+      const total = precio * cantidad;
+      historial.push({ numeroVenta, nombre, cantidad, precio, total });
+
+      mensaje.innerHTML = `<p style="color:green">✅ ${cantidad} ${nombre}(s) agregado(s) a la venta #${numeroVenta}</p>`;
+
+      document.getElementById('nombreProducto').value = '';
+      document.getElementById('cantidad').value = '';
+
+      mostrarTabla();
+      mostrarGrafico();
     }
 
-    function mostrarCarrito() {
-      const contenedor = document.getElementById('listaCompras');
-      contenedor.innerHTML = "";
-
-      carrito.forEach((p, index) => {
-        contenedor.innerHTML += `
-          <p>${p.nombre} (x${p.cantidad}) - $${p.total.toLocaleString('es-CO')}
-          <button onclick="eliminarProducto(${index})">X</button></p>`;
-      });
-
-      const totalGeneral = carrito.reduce((sum, p) => sum + p.total, 0);
-      document.getElementById('totalCompra').innerText =
-        "Total de la compra: $" + totalGeneral.toLocaleString('es-CO');
+    // ======= Finalizar venta =======
+    function finalizarVenta() {
+      numeroVenta++;
+      document.getElementById('mensaje').innerHTML =
+        `<p style="color:blue">💰 Venta #${numeroVenta - 1} finalizada. Iniciando nueva venta (#${numeroVenta})...</p>`;
     }
 
-    function eliminarProducto(index) {
-      carrito.splice(index, 1);
-      guardarDatos();
-      mostrarCarrito();
-    }
-
-    function finalizarCompra() {
-      if (carrito.length === 0) {
-        alert("No hay productos en el carrito.");
-        return;
-      }
-
-      contadorVentas++;
-      // asignar el mismo número de venta a todos los items de esta compra
-      carrito.forEach(p => p.numeroVenta = contadorVentas);
-
-      // añadimos la compra al historial manteniendo agrupación (cada item con numeroVenta)
-      historial.push(...carrito);
-      carrito = [];
-      guardarDatos();
-      mostrarCarrito();
-      alert(`Compra registrada con éxito. Número de venta: #${contadorVentas}`);
-    }
-
-    function mostrarSeccion(seccion) {
-      document.getElementById('inicio').style.display = seccion === 'inicio' ? 'block' : 'none';
-      document.getElementById('tablaCompras').style.display = seccion === 'tabla' ? 'block' : 'none';
-      document.getElementById('seccionGraficas').style.display = seccion === 'graficas' ? 'block' : 'none';
-
-      if (seccion === 'tabla') generarTabla();
-      if (seccion === 'graficas') mostrarGrafico();
-    }
-
-    function generarTabla() {
+    // ======= Mostrar tabla =======
+    function mostrarTabla() {
       const tabla = document.getElementById('tablaCompras');
       if (historial.length === 0) {
-        tabla.innerHTML = '<p style="color: yellow;">No hay compras registradas aún.</p>';
+        tabla.innerHTML = '<p>No hay compras registradas aún.</p>';
         return;
       }
 
@@ -425,7 +162,7 @@
 
       historial.forEach(p => {
         html += `<tr>
-          <td>#${p.numeroVenta || '—'}</td>
+          <td>#${p.numeroVenta}</td>
           <td>${p.nombre}</td>
           <td>${p.cantidad}</td>
           <td>$${p.precio.toLocaleString('es-CO')}</td>
@@ -437,46 +174,36 @@
       tabla.innerHTML = html;
     }
 
+    // ======= Mostrar gráfico =======
     function mostrarGrafico() {
       const ctx = document.getElementById('graficoVentas');
       Chart.getChart(ctx)?.destroy();
 
-      // Agregar totales por producto
-      const mapa = {};
+      const nombres = [];
+      const totales = [];
+
       historial.forEach(p => {
-        if (!mapa[p.nombre]) mapa[p.nombre] = 0;
-        mapa[p.nombre] += p.total;
+        const index = nombres.indexOf(p.nombre);
+        if (index === -1) {
+          nombres.push(p.nombre);
+          totales.push(p.total);
+        } else {
+          totales[index] += p.total;
+        }
       });
 
-      const nombres = Object.keys(mapa);
-      const totales = Object.values(mapa);
-
-      // Si no hay datos mostrar mensaje
-      if (nombres.length === 0) {
-        document.getElementById('seccionGraficas').innerHTML = '<h2>Gráficas de Ventas</h2><p style="color:yellow;">No hay ventas para graficar.</p>';
-        return;
-      } else {
-        // restaurar canvas si fue reemplazado
-        document.getElementById('seccionGraficas').innerHTML = `<h2>Gráficas de Ventas</h2><canvas id="graficoVentas"></canvas>`;
-      }
-
-      const ctx2 = document.getElementById('graficoVentas');
-
-      new Chart(ctx2, {
+      new Chart(ctx, {
         type: 'bar',
         data: {
           labels: nombres,
           datasets: [{
             label: 'Ventas Totales por Producto',
             data: totales,
-            backgroundColor: 'lightgreen'
+            backgroundColor: 'pink'
           }]
         },
         options: {
-          scales: { y: { beginAtZero: true } },
-          plugins: {
-            legend: { display: false }
-          }
+          scales: { y: { beginAtZero: true } }
         }
       });
     }
