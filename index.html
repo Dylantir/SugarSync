@@ -2,221 +2,233 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Tienda de Golosinas 🍬</title>
+  <title>Tienda de Golosinas</title>
+  <link rel="icon" type="image/png" href="Ahorro.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #fff0f5;
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-    }
-
-    header {
-      background-color: #ff66b2;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      font-size: 24px;
-      letter-spacing: 1px;
-    }
-
-    nav {
-      background-color: #ff99cc;
-      padding: 10px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 120px;
+      background-color: #1c1c1c;
+      padding: 20px;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      display: flex;
+      flex-direction: column;
       gap: 20px;
+      border-right: 3px solid red;
     }
-
-    nav a {
+    .sidebar h2 {
       color: white;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    nav a:hover {
-      color: #ffe6f0;
-    }
-
-    .container {
-      max-width: 1000px;
-      background: white;
-      margin: 30px auto;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-      color: #e60073;
       text-align: center;
     }
-
-    input, button {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #ff66b2;
-      box-shadow: 0 0 5px #ff99cc;
-    }
-
-    button {
-      background-color: #ff66b2;
+    .sidebar button {
+      background-color: red;
       color: white;
       border: none;
+      padding: 10px;
       cursor: pointer;
-      font-weight: bold;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background-color 0.3s;
     }
-
+    .sidebar button:hover {
+      background-color: #cc0000;
+    }
+    .main-content {
+      margin-left: 150px;
+      padding: 20px;
+      width: 100%;
+      flex: 1;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #1c1c1c;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    h1 {
+      color: red;
+      text-align: center;
+    }
+    label, h3 {
+      color: #00ccff;
+    }
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px;
+      border: none;
+      border-radius: 5px;
+    }
+    .btn-center {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    button {
+      background-color: red;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     button:hover {
-      background-color: #e60073;
+      background-color: #cc0000;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
+      background: #333;
       margin-top: 20px;
     }
-
     th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
+      border: 1px solid #fff;
+      padding: 10px;
       text-align: center;
     }
-
     th {
-      background-color: #ffb3d9;
-      color: #333;
+      background-color: #ff3333;
     }
-
-    .autocomplete-list {
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      max-height: 150px;
-      overflow-y: auto;
-      position: absolute;
-      width: 92%;
-      z-index: 10;
+    td {
+      background-color: #444;
     }
-
-    .autocomplete-item {
-      padding: 8px;
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #111;
+      color: #999;
+      font-size: 14px;
+      border-top: 2px solid red;
+    }
+    @media screen and (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: center;
+        border-right: none;
+        border-bottom: 4px solid #ff3333;
+      }
+      .main-content {
+        margin-left: 0;
+        margin-top: 140px;
+      }
+    }
+    #sugerencias {
+      background: #222;
+      border-radius: 5px;
+      padding: 5px;
+      margin-top: -10px;
+    }
+    #sugerencias p {
+      margin: 5px 0;
+      padding: 5px;
       cursor: pointer;
     }
-
-    .autocomplete-item:hover {
-      background-color: #ffe6f0;
-    }
-
-    canvas {
-      width: 100%;
-      max-height: 300px;
-      margin-top: 30px;
-    }
-
-    .delete-btn {
-      background-color: #ff3366;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .delete-btn:hover {
-      background-color: #cc0044;
+    #sugerencias p:hover {
+      background: #ff3333;
     }
   </style>
 </head>
 <body>
 
-  <header>🍭 Tienda de Golosinas 🍬</header>
-
-  <nav>
-    <a href="#">Inicio</a>
-    <a href="#">Ventas</a>
-    <a href="#">Productos</a>
-    <a href="#">Reportes</a>
-  </nav>
-
-  <div class="container">
-    <h2>Registrar Venta</h2>
-    <div style="position: relative;">
-      <input type="text" id="nombreProducto" placeholder="Buscar producto...">
-      <div id="sugerencias" class="autocomplete-list" style="display:none;"></div>
-    </div>
-    <input type="number" id="cantidad" placeholder="Cantidad" min="1">
-    <button onclick="agregarProducto()">Agregar producto</button>
-    <button onclick="finalizarVenta()">Finalizar venta</button>
-
-    <div id="mensaje"></div>
-
-    <div id="tablaCompras"></div>
-
-    <h2>📊 Gráfico de Ventas por Producto</h2>
-    <canvas id="graficoProductos"></canvas>
-
-    <h2>📈 Gráfico de Ventas por Número de Venta</h2>
-    <canvas id="graficoVentas"></canvas>
+  <div class="sidebar">
+    <h2>Menú</h2>
+    <button onclick="mostrarSeccion('inicio')">Inicio</button>
+    <button onclick="mostrarSeccion('ventas')">Ventas</button>
+    <button onclick="mostrarSeccion('graficas')">Gráficas</button>
   </div>
+
+  <div class="main-content">
+
+    <!-- Sección inicio -->
+    <div class="container" id="inicio">
+      <h1>🍬 Tienda de Golosinas 🍭</h1>
+      <p>Bienvenido al sistema de registro y análisis de ventas de tu tienda.</p>
+    </div>
+
+    <!-- Sección ventas -->
+    <div class="container" id="ventas" style="display:none;">
+      <h3>Registrar Venta</h3>
+      <input type="text" id="nombreProducto" placeholder="Nombre del producto" oninput="mostrarSugerencias()">
+      <div id="sugerencias"></div>
+      <input type="number" id="cantidad" placeholder="Cantidad" min="1">
+      <div class="btn-center">
+        <button onclick="agregarProducto()">Agregar producto</button>
+        <button onclick="finalizarVenta()">Finalizar venta</button>
+      </div>
+      <div id="mensaje"></div>
+      <div id="tablaCompras"></div>
+    </div>
+
+    <!-- Sección gráficas -->
+    <div class="container" id="graficas" style="display:none;">
+      <h2>Gráficas de Ventas</h2>
+      <canvas id="graficoProductos"></canvas>
+      <canvas id="graficoVentas"></canvas>
+    </div>
+
+  </div>
+
+  <footer>
+    Creada por Dylan Tirado, Ismael Cadena, Angie Martinez y Deimar Chaverra
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const productos = {
       "gansito": 2500, "chocorramo": 3000, "galleta festival": 1200,
-      "jet": 1000, "bon bon bum": 600, "snickers": 2700,
-      "ponymalta": 2500, "papas margarita": 2500, "detodito": 3000,
-      "milky way": 2800, "galleta oreo": 1500, "trululu": 2300,
-      "frunas": 400, "bubbaloo": 500, "milkybar": 2000, "doritos": 2500
+      "galleta oreo": 1500, "jet": 1000, "bon bon bum": 600, "milky way": 2800,
+      "snickers": 2700, "ponymalta": 2500, "papas margarita": 2500,
+      "detodito": 3000, "galleta club social": 1500, "browni": 3000,
+      "galleta ducales": 2000, "chocoso": 1200, "supercoco": 600,
+      "trululu": 1000, "gomitas fini": 2500, "agua cristal": 1500
     };
 
     let numeroVenta = 1;
     let historial = [];
 
-    // --- Sugerencias de producto ---
-    const inputProducto = document.getElementById("nombreProducto");
-    const listaSugerencias = document.getElementById("sugerencias");
+    function mostrarSugerencias() {
+      const entrada = document.getElementById('nombreProducto').value.toLowerCase();
+      const contenedor = document.getElementById('sugerencias');
+      contenedor.innerHTML = '';
 
-    inputProducto.addEventListener("input", () => {
-      const texto = inputProducto.value.toLowerCase();
-      listaSugerencias.innerHTML = "";
-      if (!texto) {
-        listaSugerencias.style.display = "none";
-        return;
-      }
+      if (!entrada) return;
 
-      const filtrados = Object.keys(productos).filter(p => p.includes(texto));
-      if (filtrados.length === 0) {
-        listaSugerencias.style.display = "none";
-        return;
-      }
-
-      listaSugerencias.style.display = "block";
-      filtrados.forEach(p => {
-        const item = document.createElement("div");
-        item.classList.add("autocomplete-item");
-        item.innerHTML = `${p} - $${productos[p].toLocaleString("es-CO")}`;
-        item.onclick = () => {
-          inputProducto.value = p;
-          listaSugerencias.style.display = "none";
-        };
-        listaSugerencias.appendChild(item);
+      Object.keys(productos).forEach(nombre => {
+        if (nombre.includes(entrada)) {
+          const precio = productos[nombre];
+          const p = document.createElement('p');
+          p.textContent = `${nombre} - $${precio.toLocaleString('es-CO')}`;
+          p.onclick = () => {
+            document.getElementById('nombreProducto').value = nombre;
+            contenedor.innerHTML = '';
+          };
+          contenedor.appendChild(p);
+        }
       });
-    });
+    }
 
-    // --- Agregar producto ---
     function agregarProducto() {
-      const nombre = inputProducto.value.trim().toLowerCase();
-      const cantidad = parseInt(document.getElementById("cantidad").value);
-      const mensaje = document.getElementById("mensaje");
+      const nombre = document.getElementById('nombreProducto').value.trim().toLowerCase();
+      const cantidad = parseInt(document.getElementById('cantidad').value);
+      const mensaje = document.getElementById('mensaje');
 
       if (!productos[nombre]) {
         mensaje.innerHTML = `<p style="color:red">❌ Producto no encontrado.</p>`;
@@ -231,49 +243,47 @@
       const total = precio * cantidad;
       historial.push({ numeroVenta, nombre, cantidad, precio, total });
 
-      mensaje.innerHTML = `<p style="color:green">✅ ${cantidad} ${nombre}(s) agregado(s) a la venta #${numeroVenta}</p>`;
-      inputProducto.value = "";
-      document.getElementById("cantidad").value = "";
-
+      mensaje.innerHTML = `<p style="color:lightgreen">✅ ${cantidad} ${nombre}(s) agregado(s) a la venta #${numeroVenta}</p>`;
+      document.getElementById('nombreProducto').value = '';
+      document.getElementById('cantidad').value = '';
       mostrarTabla();
-      mostrarGraficos();
+      mostrarGraficas();
     }
 
-    // --- Finalizar venta ---
     function finalizarVenta() {
       numeroVenta++;
-      document.getElementById("mensaje").innerHTML =
-        `<p style="color:blue">💰 Venta finalizada. Nueva venta (#${numeroVenta}).</p>`;
+      document.getElementById('mensaje').innerHTML =
+        `<p style="color:yellow">💰 Venta #${numeroVenta - 1} finalizada. Nueva venta #${numeroVenta}</p>`;
     }
 
-    // --- Eliminar una venta completa ---
     function eliminarVenta(num) {
-      historial = historial.filter(p => p.numeroVenta !== num);
-      mostrarTabla();
-      mostrarGraficos();
-      document.getElementById("mensaje").innerHTML =
-        `<p style="color:red">🗑️ Venta #${num} eliminada.</p>`;
+      if (confirm(`¿Eliminar venta #${num}?`)) {
+        historial = historial.filter(p => p.numeroVenta !== num);
+        mostrarTabla();
+        mostrarGraficas();
+      }
     }
 
-    // --- Mostrar tabla ---
     function mostrarTabla() {
-      const tabla = document.getElementById("tablaCompras");
+      const tabla = document.getElementById('tablaCompras');
       if (historial.length === 0) {
-        tabla.innerHTML = "<p>No hay compras registradas.</p>";
+        tabla.innerHTML = '<p>No hay compras registradas aún.</p>';
         return;
       }
 
-      let html = `<h3>Historial de Compras</h3>
-      <table><tr><th>N° Venta</th><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th><th>Acción</th></tr>`;
+      let html = `<h3>Historial de Ventas</h3>
+      <table><tr><th>N° Venta</th><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th><th>Eliminar Venta</th></tr>`;
+
+      const ventasUnicas = [...new Set(historial.map(p => p.numeroVenta))];
 
       historial.forEach(p => {
         html += `<tr>
           <td>#${p.numeroVenta}</td>
           <td>${p.nombre}</td>
           <td>${p.cantidad}</td>
-          <td>$${p.precio.toLocaleString("es-CO")}</td>
-          <td>$${p.total.toLocaleString("es-CO")}</td>
-          <td><button class="delete-btn" onclick="eliminarVenta(${p.numeroVenta})">Eliminar</button></td>
+          <td>$${p.precio.toLocaleString('es-CO')}</td>
+          <td>$${p.total.toLocaleString('es-CO')}</td>
+          <td><button onclick="eliminarVenta(${p.numeroVenta})">X</button></td>
         </tr>`;
       });
 
@@ -281,52 +291,52 @@
       tabla.innerHTML = html;
     }
 
-    // --- Mostrar gráficos ---
-    function mostrarGraficos() {
-      const ctxProd = document.getElementById("graficoProductos");
-      const ctxVenta = document.getElementById("graficoVentas");
-      Chart.getChart(ctxProd)?.destroy();
-      Chart.getChart(ctxVenta)?.destroy();
+    function mostrarGraficas() {
+      const ctx1 = document.getElementById('graficoProductos');
+      const ctx2 = document.getElementById('graficoVentas');
+      Chart.getChart(ctx1)?.destroy();
+      Chart.getChart(ctx2)?.destroy();
 
-      // Gráfico por producto
-      const productosMap = {};
+      const productosVendidos = {};
+      const ventasTotales = {};
+
       historial.forEach(p => {
-        productosMap[p.nombre] = (productosMap[p.nombre] || 0) + p.total;
+        productosVendidos[p.nombre] = (productosVendidos[p.nombre] || 0) + p.total;
+        ventasTotales[p.numeroVenta] = (ventasTotales[p.numeroVenta] || 0) + p.total;
       });
 
-      new Chart(ctxProd, {
-        type: "bar",
+      new Chart(ctx1, {
+        type: 'bar',
         data: {
-          labels: Object.keys(productosMap),
+          labels: Object.keys(productosVendidos),
           datasets: [{
-            label: "Ventas Totales por Producto",
-            data: Object.values(productosMap),
-            backgroundColor: "#ff99cc"
+            label: 'Ventas por Producto',
+            data: Object.values(productosVendidos),
+            backgroundColor: 'red'
           }]
         },
         options: { scales: { y: { beginAtZero: true } } }
       });
 
-      // Gráfico por número de venta
-      const ventasMap = {};
-      historial.forEach(p => {
-        ventasMap[p.numeroVenta] = (ventasMap[p.numeroVenta] || 0) + p.total;
-      });
-
-      new Chart(ctxVenta, {
-        type: "line",
+      new Chart(ctx2, {
+        type: 'bar',
         data: {
-          labels: Object.keys(ventasMap),
+          labels: Object.keys(ventasTotales).map(v => `Venta #${v}`),
           datasets: [{
-            label: "Total por Venta",
-            data: Object.values(ventasMap),
-            borderColor: "#ff3385",
-            fill: false,
-            tension: 0.2
+            label: 'Total por Venta',
+            data: Object.values(ventasTotales),
+            backgroundColor: '#00ccff'
           }]
         },
         options: { scales: { y: { beginAtZero: true } } }
       });
+    }
+
+    function mostrarSeccion(seccion) {
+      document.getElementById('inicio').style.display = seccion === 'inicio' ? 'block' : 'none';
+      document.getElementById('ventas').style.display = seccion === 'ventas' ? 'block' : 'none';
+      document.getElementById('graficas').style.display = seccion === 'graficas' ? 'block' : 'none';
+      if (seccion === 'graficas') mostrarGraficas();
     }
   </script>
 </body>
