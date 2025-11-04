@@ -171,6 +171,9 @@
         <button onclick="finalizarVenta()">Finalizar venta</button>
       </div>
       <div id="mensaje"></div>
+
+      <div id="ventaActual"></div>
+      <h3 id="totalVenta" style="text-align:center; color:#00ffcc;"></h3>
     </div>
 
     <!-- Sección ventas -->
@@ -205,6 +208,7 @@
 
     let numeroVenta = 1;
     let historial = [];
+    let ventaActual = [];
 
     function mostrarSugerencias() {
       const entrada = document.getElementById('nombreProducto').value.toLowerCase();
@@ -243,19 +247,60 @@
 
       const precio = productos[nombre];
       const total = precio * cantidad;
-      historial.push({ numeroVenta, nombre, cantidad, precio, total });
+      ventaActual.push({ nombre, cantidad, precio, total });
 
-      mensaje.innerHTML = `<p style="color:lightgreen">✅ ${cantidad} ${nombre}(s) agregado(s) a la venta #${numeroVenta}</p>`;
+      mensaje.innerHTML = `<p style="color:lightgreen">✅ ${cantidad} ${nombre}(s) agregado(s)</p>`;
       document.getElementById('nombreProducto').value = '';
       document.getElementById('cantidad').value = '';
-      mostrarTabla();
-      mostrarGraficas();
+
+      mostrarVentaActual();
+    }
+
+    function mostrarVentaActual() {
+      const cont = document.getElementById('ventaActual');
+      if (ventaActual.length === 0) {
+        cont.innerHTML = '<p>No hay productos agregados aún.</p>';
+        document.getElementById('totalVenta').textContent = '';
+        return;
+      }
+
+      let html = `<table><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Total</th><th>Eliminar</th></tr>`;
+      let totalVenta = 0;
+      ventaActual.forEach((p, i) => {
+        totalVenta += p.total;
+        html += `<tr>
+          <td>${p.nombre}</td>
+          <td>${p.cantidad}</td>
+          <td>$${p.precio.toLocaleString('es-CO')}</td>
+          <td>$${p.total.toLocaleString('es-CO')}</td>
+          <td><button onclick="eliminarProductoActual(${i})">X</button></td>
+        </tr>`;
+      });
+      html += `</table>`;
+      cont.innerHTML = html;
+      document.getElementById('totalVenta').textContent = `💰 Total a pagar: $${totalVenta.toLocaleString('es-CO')}`;
+    }
+
+    function eliminarProductoActual(index) {
+      ventaActual.splice(index, 1);
+      mostrarVentaActual();
     }
 
     function finalizarVenta() {
-      numeroVenta++;
+      if (ventaActual.length === 0) {
+        alert("No hay productos para finalizar la venta.");
+        return;
+      }
+
+      ventaActual.forEach(p => {
+        historial.push({ numeroVenta, ...p });
+      });
+
       document.getElementById('mensaje').innerHTML =
-        `<p style="color:yellow">💰 Venta #${numeroVenta - 1} finalizada. Nueva venta #${numeroVenta}</p>`;
+        `<p style="color:yellow">💰 Venta #${numeroVenta} finalizada. Nueva venta #${numeroVenta + 1}</p>`;
+      numeroVenta++;
+      ventaActual = [];
+      mostrarVentaActual();
     }
 
     function eliminarVenta(num) {
@@ -274,7 +319,6 @@
       }
 
       let html = `<table><tr><th>N° Venta</th><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th><th>Eliminar Venta</th></tr>`;
-
       historial.forEach(p => {
         html += `<tr>
           <td>#${p.numeroVenta}</td>
@@ -285,7 +329,6 @@
           <td><button onclick="eliminarVenta(${p.numeroVenta})">X</button></td>
         </tr>`;
       });
-
       html += `</table>`;
       tabla.innerHTML = html;
     }
