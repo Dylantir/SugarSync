@@ -161,10 +161,7 @@
     <div class="container" id="inicio">
       <h1>🍬 Tienda de Golosinas 🍭</h1>
       <p>Bienvenido al sistema de registro y análisis de ventas de tu tienda.</p>
-    </div>
 
-    <!-- Sección ventas -->
-    <div class="container" id="ventas" style="display:none;">
       <h3>Registrar Venta</h3>
       <input type="text" id="nombreProducto" placeholder="Nombre del producto" oninput="mostrarSugerencias()">
       <div id="sugerencias"></div>
@@ -174,6 +171,11 @@
         <button onclick="finalizarVenta()">Finalizar venta</button>
       </div>
       <div id="mensaje"></div>
+    </div>
+
+    <!-- Sección ventas -->
+    <div class="container" id="ventas" style="display:none;">
+      <h2>Historial de Ventas</h2>
       <div id="tablaCompras"></div>
     </div>
 
@@ -271,10 +273,7 @@
         return;
       }
 
-      let html = `<h3>Historial de Ventas</h3>
-      <table><tr><th>N° Venta</th><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th><th>Eliminar Venta</th></tr>`;
-
-      const ventasUnicas = [...new Set(historial.map(p => p.numeroVenta))];
+      let html = `<table><tr><th>N° Venta</th><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Total</th><th>Eliminar Venta</th></tr>`;
 
       historial.forEach(p => {
         html += `<tr>
@@ -336,6 +335,7 @@
       document.getElementById('inicio').style.display = seccion === 'inicio' ? 'block' : 'none';
       document.getElementById('ventas').style.display = seccion === 'ventas' ? 'block' : 'none';
       document.getElementById('graficas').style.display = seccion === 'graficas' ? 'block' : 'none';
+      if (seccion === 'ventas') mostrarTabla();
       if (seccion === 'graficas') mostrarGraficas();
     }
   </script>
