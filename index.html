@@ -163,7 +163,7 @@
       <p>Bienvenido al sistema de registro y análisis de ventas.</p>
 
       <h3>Fecha de la venta</h3>
-      <input type="date" id="fechaVenta">
+      <input type="date" id="fechaVenta" onchange="reiniciarNumeroVenta()">
 
       <h3>Registrar Venta</h3>
       <input type="text" id="nombreProducto" placeholder="Nombre del producto" oninput="mostrarSugerencias()">
@@ -215,8 +215,19 @@
     let historial = [];
     let ventaActual = [];
     let numeroVenta = 1;
+    let fechaActual = "";
 
     document.getElementById("fechaVenta").valueAsDate = new Date();
+    fechaActual = document.getElementById("fechaVenta").value;
+
+    function reiniciarNumeroVenta() {
+      const nuevaFecha = document.getElementById("fechaVenta").value;
+      if (nuevaFecha !== fechaActual) {
+        fechaActual = nuevaFecha;
+        const ventasDelDia = historial.filter(v => v.fecha === nuevaFecha);
+        numeroVenta = ventasDelDia.length > 0 ? Math.max(...ventasDelDia.map(v => v.numeroVenta)) + 1 : 1;
+      }
+    }
 
     function actualizarFechas() {
       const fechas = [...new Set(historial.map(p => p.fecha))].sort();
