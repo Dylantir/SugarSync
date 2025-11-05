@@ -96,6 +96,12 @@
     <!-- INICIO -->
     <div class="container" id="inicio">
       <h1>🍬 SugarSync 🍭</h1>
+
+      <!-- Imagen agregada -->
+      <div style="text-align:center; margin:15px 0;">
+        <img src="SugarSync.png" alt="Logo SugarSync" style="max-width:200px; height:auto; border-radius:12px; box-shadow:0 0 10px rgba(251,196,171,0.4);">
+      </div>
+
       <p class="muted">Registra ventas por fecha, agrega productos a la venta actual y finaliza la venta para almacenarla en el historial.</p>
 
       <h3>Fecha de la venta</h3>
@@ -174,11 +180,10 @@
       "chocoboom":1700,"paleta piruleta":700,"paleta payaso":900,"caramelos toffee":1100,"gasa candy":1000,"bocadillo":900
     };
 
-    /* ---------- Cargar / init ---------- */
     let productos = JSON.parse(localStorage.getItem('productos')) || {...baseProductos};
-    localStorage.setItem('productos', JSON.stringify(productos)); // asegura que exista key
+    localStorage.setItem('productos', JSON.stringify(productos));
 
-    let historial = JSON.parse(localStorage.getItem('historial')) || []; // cada item: {fecha, numeroVenta, nombre, cantidad, precio, total}
+    let historial = JSON.parse(localStorage.getItem('historial')) || [];
     let ventaActual = [];
     let numeroVenta = 1;
     document.getElementById("fechaVenta").valueAsDate = new Date();
@@ -189,11 +194,9 @@
       mostrarVentaActual();
     };
 
-    /* ---------- Persistencia ---------- */
     function guardarProductos(){ localStorage.setItem('productos', JSON.stringify(productos)); }
     function guardarHistorial(){ localStorage.setItem('historial', JSON.stringify(historial)); }
 
-    /* ---------- Fechas disponibles (selects) ---------- */
     function actualizarFechas(){
       const fechasSet = new Set(historial.map(h=>h.fecha));
       const fechas = Array.from(fechasSet).sort();
@@ -218,7 +221,6 @@
       if (document.getElementById('graficas').style.display !== 'none') mostrarGraficas();
     }
 
-    /* ---------- Sugerencias/autocomplete ---------- */
     function mostrarSugerencias(){
       const entrada = document.getElementById('nombreProducto').value.trim().toLowerCase();
       const cont = document.getElementById('sugerencias'); cont.innerHTML = '';
@@ -233,7 +235,6 @@
       });
     }
 
-    /* ---------- Agregar producto a venta actual ---------- */
     function agregarProducto(){
       const nombre = document.getElementById('nombreProducto').value.trim().toLowerCase();
       const cantidad = parseInt(document.getElementById('cantidad').value);
@@ -265,7 +266,6 @@
 
     function eliminarProductoActual(i){ ventaActual.splice(i,1); mostrarVentaActual(); }
 
-    /* ---------- Reiniciar número por fecha ---------- */
     function reiniciarNumeroVenta(){
       const fecha = document.getElementById('fechaVenta').value;
       const ventasDelDia = historial.filter(h=>h.fecha===fecha);
@@ -275,7 +275,6 @@
       actualizarFechas();
     }
 
-    /* ---------- Finalizar venta ---------- */
     function finalizarVenta(){
       if (ventaActual.length===0){ alert('No hay productos para finalizar la venta.'); return; }
       const fecha = document.getElementById('fechaVenta').value;
@@ -287,7 +286,6 @@
       numeroVenta++; ventaActual = []; mostrarVentaActual(); actualizarFechas();
     }
 
-    /* ---------- Eliminar venta completa ---------- */
     function eliminarVenta(num, fecha){
       if (!confirm(`¿Eliminar venta #${num} del ${fecha}?`)) return;
       historial = historial.filter(h=>!(h.numeroVenta===num && h.fecha===fecha));
@@ -295,13 +293,11 @@
       document.getElementById('mensaje').innerHTML = `<p style="color:green">Venta #${num} eliminada.</p>`;
     }
 
-    /* ---------- Mostrar tabla (ventas por fecha) ---------- */
     function mostrarTabla(){
       const fecha = document.getElementById('fechaFiltro').value;
       const tabla = document.getElementById('tablaCompras');
       const datos = historial.filter(h=>h.fecha===fecha);
       if (datos.length===0){ tabla.innerHTML='<p>No hay ventas registradas para esta fecha.</p>'; return; }
-      // agrupar por numeroVenta
       const agrup = {};
       datos.forEach(it=>{ if(!agrup[it.numeroVenta]) agrup[it.numeroVenta]=[]; agrup[it.numeroVenta].push(it); });
       let html = `<table><tr><th>N° Venta</th><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th><th>Eliminar</th></tr>`;
@@ -314,7 +310,6 @@
       tabla.innerHTML = html;
     }
 
-    /* ---------- Gráficas (productos: cantidad + total; ventas: total por venta) ---------- */
     function mostrarGraficas(){
       const fecha = document.getElementById('fechaGrafica').value;
       const ctxP = document.getElementById('graficoProductos');
@@ -337,7 +332,6 @@
         totalPorVenta[d.numeroVenta] = (totalPorVenta[d.numeroVenta]||0) + d.total;
       });
 
-      // Productos: dos datasets (total $ y cantidad)
       new Chart(ctxP, {
         type:'bar',
         data:{
@@ -356,7 +350,6 @@
         }
       });
 
-      // Ventas: total por venta
       new Chart(ctxV, {
         type:'bar',
         data:{
@@ -367,7 +360,6 @@
       });
     }
 
-    /* ---------- Navegación entre secciones ---------- */
     function mostrarSeccion(sec){
       document.getElementById('inicio').style.display = sec==='inicio' ? 'block' : 'none';
       document.getElementById('ventas').style.display = sec==='ventas' ? 'block' : 'none';
@@ -378,7 +370,6 @@
       if (sec==='productos') mostrarProductos();
     }
 
-    /* ---------- Gestión de productos (reemplaza base) ---------- */
     function mostrarProductos(){
       const cont = document.getElementById('tablaProductos');
       const keys = Object.keys(productos).sort();
@@ -426,13 +417,6 @@
       productos = {...baseProductos}; guardarProductos(); mostrarProductos();
       document.getElementById('mensaje').innerHTML = `<p style="color:green">Lista base restaurada.</p>`;
     }
-
-    /* ---------- Guardar cambios (helpers) ---------- */
-    function guardarProductos(){ localStorage.setItem('productos', JSON.stringify(productos)); }
-    function guardarHistorial(){ localStorage.setItem('historial', JSON.stringify(historial)); }
-
-    /* ---------- actualizar selects al cambiar historial/productos ---------- */
-    // llamadas a actualizarFechas() ya integradas donde corresponde
   </script>
 </body>
 </html>
