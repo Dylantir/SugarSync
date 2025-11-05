@@ -3,280 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <title>Tienda de Golosinas</title>
-  <link rel="icon" type="image/png" href="Ahorro.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      background-color: #000;
-      color: #fff;
       font-family: Arial, sans-serif;
+      background-color: #fff5f5;
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
     }
-    .sidebar {
-      width: 120px;
-      background-color: #1c1c1c;
-      padding: 20px;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-      top: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      border-right: 3px solid red;
-    }
-    .sidebar h2 {
+    header {
+      background-color: #b30000;
       color: white;
+      padding: 15px;
       text-align: center;
     }
-    .sidebar button {
-      background-color: red;
+    nav {
+      background-color: #e60000;
+      overflow: hidden;
+    }
+    nav a {
+      float: left;
       color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-      border-radius: 5px;
-      font-size: 16px;
-      transition: background-color 0.3s;
-    }
-    .sidebar button:hover {
-      background-color: #cc0000;
-    }
-    .main-content {
-      margin-left: 150px;
-      padding: 20px;
-      width: 100%;
-      flex: 1;
-    }
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background-color: #1c1c1c;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    h1 {
-      color: red;
       text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-weight: bold;
     }
-    label, h3 {
-      color: #00ccff;
+    nav a:hover {
+      background-color: #ff4d4d;
     }
-    input[type="number"], input[type="text"], input[type="date"], select {
-      width: 100%;
+    section {
+      display: none;
+      padding: 20px;
+    }
+    section.active {
+      display: block;
+    }
+    input, button, select {
       padding: 8px;
-      margin: 6px 0 12px;
-      border: none;
+      margin: 5px;
       border-radius: 5px;
-    }
-    .btn-center {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
-      gap: 10px;
+      border: 1px solid #ccc;
     }
     button {
-      background-color: red;
-      border: none;
+      background-color: #e60000;
       color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #cc0000;
+      background-color: #b30000;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #333;
-      margin-top: 20px;
+      margin-top: 15px;
     }
     th, td {
-      border: 1px solid #fff;
-      padding: 10px;
+      border: 1px solid #ddd;
+      padding: 8px;
       text-align: center;
     }
     th {
-      background-color: #ff3333;
+      background-color: #ffcccc;
     }
-    td {
-      background-color: #444;
+    h2 {
+      color: #b30000;
     }
-    footer {
-      text-align: center;
-      padding: 15px;
-      background-color: #111;
-      color: #999;
-      font-size: 14px;
-      border-top: 2px solid red;
-    }
-    @media screen and (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        justify-content: center;
-        border-right: none;
-        border-bottom: 4px solid #ff3333;
-      }
-      .main-content {
-        margin-left: 0;
-        margin-top: 140px;
-      }
-    }
-    #sugerencias {
-      background: #222;
-      border-radius: 5px;
-      padding: 5px;
-      margin-top: -10px;
-    }
-    #sugerencias p {
-      margin: 5px 0;
-      padding: 5px;
-      cursor: pointer;
-    }
-    #sugerencias p:hover {
-      background: #ff3333;
+    canvas {
+      margin-top: 30px;
+      max-height: 300px;
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
-  <div class="sidebar">
-    <h2>Menú</h2>
-    <button onclick="mostrarSeccion('inicio')">Inicio</button>
-    <button onclick="mostrarSeccion('ventas')">Ventas</button>
-    <button onclick="mostrarSeccion('graficas')">Gráficas</button>
-  </div>
+  <header>
+    <h1>🍬 Tienda de Golosinas 🍭</h1>
+  </header>
 
-  <div class="main-content">
+  <nav>
+    <a href="#" onclick="mostrarSeccion('inicio')">Inicio</a>
+    <a href="#" onclick="mostrarSeccion('ventas')">Ventas</a>
+    <a href="#" onclick="mostrarSeccion('productos')">Productos</a>
+  </nav>
 
-    <!-- Sección inicio -->
-    <div class="container" id="inicio">
-      <h1>🍬 Tienda de Golosinas 🍭</h1>
-      <p>Bienvenido al sistema de registro y análisis de ventas.</p>
+  <section id="inicio" class="active">
+    <h2>Registrar Venta</h2>
+    <label>Fecha: <input type="date" id="fecha" onchange="cambiarFecha()"></label><br>
+    <input type="text" id="nombreProducto" placeholder="Nombre del producto">
+    <input type="number" id="cantidad" placeholder="Cantidad" min="1">
+    <button onclick="agregarProducto()">Agregar</button>
+    <button onclick="finalizarVenta()">Finalizar Venta</button>
 
-      <h3>Fecha de la venta</h3>
-      <input type="date" id="fechaVenta" onchange="reiniciarNumeroVenta()">
+    <div id="mensaje"></div>
+    <div id="listaActual"></div>
+  </section>
 
-      <h3>Registrar Venta</h3>
-      <input type="text" id="nombreProducto" placeholder="Nombre del producto" oninput="mostrarSugerencias()">
-      <div id="sugerencias"></div>
-      <input type="number" id="cantidad" placeholder="Cantidad" min="1">
-      <div class="btn-center">
-        <button onclick="agregarProducto()">Agregar producto</button>
-        <button onclick="finalizarVenta()">Finalizar venta</button>
-      </div>
-      <div id="mensaje"></div>
+  <section id="ventas">
+    <h2>Historial de Ventas</h2>
+    <div id="tablaCompras"></div>
+    <canvas id="graficoVentas"></canvas>
+  </section>
 
-      <div id="ventaActual"></div>
-      <h3 id="totalVenta" style="text-align:center; color:#00ffcc;"></h3>
-    </div>
+  <section id="productos">
+    <h2>Gestión de Productos</h2>
+    <input type="text" id="nuevoNombre" placeholder="Nombre del producto">
+    <input type="number" id="nuevoPrecio" placeholder="Precio">
+    <button onclick="agregarNuevoProducto()">Agregar Producto</button>
 
-    <!-- Sección ventas -->
-    <div class="container" id="ventas" style="display:none;">
-      <h2>Historial de Ventas</h2>
-      <label for="fechaFiltro">Seleccionar fecha:</label>
-      <select id="fechaFiltro" onchange="mostrarTabla()"></select>
-      <div id="tablaCompras"></div>
-    </div>
+    <div id="tablaProductos"></div>
+  </section>
 
-    <!-- Sección gráficas -->
-    <div class="container" id="graficas" style="display:none;">
-      <h2>Gráficas de Ventas</h2>
-      <label for="fechaGrafica">Seleccionar fecha:</label>
-      <select id="fechaGrafica" onchange="mostrarGraficas()"></select>
-      <canvas id="graficoProductos"></canvas>
-      <canvas id="graficoVentas"></canvas>
-    </div>
-
-  </div>
-
-  <footer>
-    Creada por Dylan Tirado, Audrick Fontecha, Camilo Garcia y Miguel Avila
-  </footer>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const productos = {
-      "gansito": 2500, "chocorramo": 3000, "galleta festival": 1200,
-      "galleta oreo": 1500, "jet": 1000, "bon bon bum": 600, "milky way": 2800,
-      "snickers": 2700, "ponymalta": 2500, "papas margarita": 2500,
-      "detodito": 3000, "galleta club social": 1500, "browni": 3000,
-      "galleta ducales": 2000, "chocoso": 1200, "supercoco": 600,
-      "trululu": 1000, "gomitas fini": 2500, "agua cristal": 1500
+    // ====== Variables globales ======
+    let productos = JSON.parse(localStorage.getItem('productos')) || {
+      "gansito": 2500, "chocorramo": 3000, "galleta festival": 1200, "galleta oreo": 1500,
+      "jet": 1000, "bon bon bum": 600, "snickers": 2700, "chicle trident": 800,
+      "papas margarita": 2500, "detodito": 3000, "yogurt alpina": 2500
     };
-
-    let historial = [];
-    let ventaActual = [];
+    let historialPorDia = JSON.parse(localStorage.getItem('historialPorDia')) || {};
+    let fechaActual = new Date().toISOString().split('T')[0];
     let numeroVenta = 1;
-    let fechaActual = "";
+    let ventaActual = [];
 
-    document.getElementById("fechaVenta").valueAsDate = new Date();
-    fechaActual = document.getElementById("fechaVenta").value;
+    document.getElementById('fecha').value = fechaActual;
 
-    function reiniciarNumeroVenta() {
-      const nuevaFecha = document.getElementById("fechaVenta").value;
-      if (nuevaFecha !== fechaActual) {
-        fechaActual = nuevaFecha;
-        const ventasDelDia = historial.filter(v => v.fecha === nuevaFecha);
-        numeroVenta = ventasDelDia.length > 0 ? Math.max(...ventasDelDia.map(v => v.numeroVenta)) + 1 : 1;
-      }
+    // ====== Funciones de navegación ======
+    function mostrarSeccion(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === 'ventas') mostrarTabla();
+      if (id === 'productos') mostrarProductos();
     }
 
-    function actualizarFechas() {
-      const fechas = [...new Set(historial.map(p => p.fecha))].sort();
-      const fechaFiltro = document.getElementById("fechaFiltro");
-      const fechaGrafica = document.getElementById("fechaGrafica");
-
-      fechaFiltro.innerHTML = "";
-      fechaGrafica.innerHTML = "";
-
-      if (fechas.length === 0) {
-        fechaFiltro.innerHTML = `<option>No hay fechas</option>`;
-        fechaGrafica.innerHTML = `<option>No hay fechas</option>`;
-        return;
-      }
-
-      fechas.forEach(f => {
-        const opt1 = document.createElement("option");
-        opt1.value = f;
-        opt1.textContent = f;
-        fechaFiltro.appendChild(opt1);
-
-        const opt2 = document.createElement("option");
-        opt2.value = f;
-        opt2.textContent = f;
-        fechaGrafica.appendChild(opt2);
-      });
+    // ====== Cambio de fecha ======
+    function cambiarFecha() {
+      fechaActual = document.getElementById('fecha').value;
+      numeroVenta = (historialPorDia[fechaActual]?.length || 0) + 1;
+      ventaActual = [];
+      mostrarListaActual();
+      mostrarTabla();
+      mostrarGrafico();
     }
 
-    function mostrarSugerencias() {
-      const entrada = document.getElementById('nombreProducto').value.toLowerCase();
-      const contenedor = document.getElementById('sugerencias');
-      contenedor.innerHTML = '';
-
-      if (!entrada) return;
-
-      Object.keys(productos).forEach(nombre => {
-        if (nombre.includes(entrada)) {
-          const precio = productos[nombre];
-          const p = document.createElement('p');
-          p.textContent = `${nombre} - $${precio.toLocaleString('es-CO')}`;
-          p.onclick = () => {
-            document.getElementById('nombreProducto').value = nombre;
-            contenedor.innerHTML = '';
-          };
-          contenedor.appendChild(p);
-        }
-      });
-    }
-
+    // ====== Agregar producto ======
     function agregarProducto() {
       const nombre = document.getElementById('nombreProducto').value.trim().toLowerCase();
       const cantidad = parseInt(document.getElementById('cantidad').value);
@@ -295,23 +166,22 @@
       const total = precio * cantidad;
       ventaActual.push({ nombre, cantidad, precio, total });
 
-      mensaje.innerHTML = `<p style="color:lightgreen">✅ ${cantidad} ${nombre}(s) agregado(s)</p>`;
+      mensaje.innerHTML = `<p style="color:green">✅ ${cantidad} ${nombre}(s) agregado(s).</p>`;
       document.getElementById('nombreProducto').value = '';
       document.getElementById('cantidad').value = '';
-
-      mostrarVentaActual();
+      mostrarListaActual();
     }
 
-    function mostrarVentaActual() {
-      const cont = document.getElementById('ventaActual');
+    // ====== Mostrar lista de venta actual ======
+    function mostrarListaActual() {
+      const cont = document.getElementById('listaActual');
       if (ventaActual.length === 0) {
-        cont.innerHTML = '<p>No hay productos agregados aún.</p>';
-        document.getElementById('totalVenta').textContent = '';
+        cont.innerHTML = "<p>No hay productos agregados.</p>";
         return;
       }
 
-      let html = `<table><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Total</th><th>Eliminar</th></tr>`;
       let totalVenta = 0;
+      let html = `<table><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Total</th><th>Acción</th></tr>`;
       ventaActual.forEach((p, i) => {
         totalVenta += p.total;
         html += `<tr>
@@ -319,123 +189,135 @@
           <td>${p.cantidad}</td>
           <td>$${p.precio.toLocaleString('es-CO')}</td>
           <td>$${p.total.toLocaleString('es-CO')}</td>
-          <td><button onclick="eliminarProductoActual(${i})">X</button></td>
+          <td><button onclick="eliminarProductoActual(${i})">❌</button></td>
         </tr>`;
       });
-      html += `</table>`;
+      html += `<tr><th colspan="3">TOTAL</th><th colspan="2">$${totalVenta.toLocaleString('es-CO')}</th></tr></table>`;
       cont.innerHTML = html;
-      document.getElementById('totalVenta').textContent = `💰 Total a pagar: $${totalVenta.toLocaleString('es-CO')}`;
     }
 
-    function eliminarProductoActual(index) {
-      ventaActual.splice(index, 1);
-      mostrarVentaActual();
+    function eliminarProductoActual(i) {
+      ventaActual.splice(i, 1);
+      mostrarListaActual();
     }
 
+    // ====== Finalizar venta ======
     function finalizarVenta() {
-      if (ventaActual.length === 0) {
-        alert("No hay productos para finalizar la venta.");
-        return;
-      }
+      if (ventaActual.length === 0) return alert("Agrega productos primero");
+      if (!historialPorDia[fechaActual]) historialPorDia[fechaActual] = [];
+      historialPorDia[fechaActual].push({ numeroVenta, productos: ventaActual });
+      localStorage.setItem('historialPorDia', JSON.stringify(historialPorDia));
 
-      const fecha = document.getElementById('fechaVenta').value;
-      ventaActual.forEach(p => {
-        historial.push({ fecha, numeroVenta, ...p });
-      });
-
-      document.getElementById('mensaje').innerHTML =
-        `<p style="color:yellow">💰 Venta #${numeroVenta} del ${fecha} finalizada.</p>`;
       numeroVenta++;
       ventaActual = [];
-      mostrarVentaActual();
-      actualizarFechas();
+      document.getElementById('mensaje').innerHTML =
+        `<p style="color:blue">💰 Venta finalizada. Nueva venta iniciada (#${numeroVenta})</p>`;
+      mostrarListaActual();
+      mostrarTabla();
+      mostrarGrafico();
     }
 
-    function eliminarVenta(num, fecha) {
-      if (confirm(`¿Eliminar venta #${num} del ${fecha}?`)) {
-        historial = historial.filter(p => !(p.numeroVenta === num && p.fecha === fecha));
-        mostrarTabla();
-        mostrarGraficas();
-        actualizarFechas();
-      }
-    }
-
+    // ====== Mostrar tabla de ventas ======
     function mostrarTabla() {
-      const fechaSeleccionada = document.getElementById('fechaFiltro').value;
       const tabla = document.getElementById('tablaCompras');
-      const datos = historial.filter(p => p.fecha === fechaSeleccionada);
+      const dia = historialPorDia[fechaActual] || [];
 
-      if (datos.length === 0) {
-        tabla.innerHTML = '<p>No hay ventas registradas para esta fecha.</p>';
+      if (dia.length === 0) {
+        tabla.innerHTML = "<p>No hay ventas registradas en esta fecha.</p>";
         return;
       }
 
-      let html = `<table><tr><th>N° Venta</th><th>Producto</th><th>Cant.</th><th>Precio</th><th>Total</th><th>Eliminar</th></tr>`;
-      datos.forEach(p => {
-        html += `<tr>
-          <td>#${p.numeroVenta}</td>
-          <td>${p.nombre}</td>
-          <td>${p.cantidad}</td>
-          <td>$${p.precio.toLocaleString('es-CO')}</td>
-          <td>$${p.total.toLocaleString('es-CO')}</td>
-          <td><button onclick="eliminarVenta(${p.numeroVenta}, '${p.fecha}')">X</button></td>
-        </tr>`;
+      let html = `<table><tr><th>N° Venta</th><th>Producto</th><th>Cantidad</th><th>Total</th></tr>`;
+      dia.forEach(v => {
+        v.productos.forEach(p => {
+          html += `<tr>
+            <td>#${v.numeroVenta}</td>
+            <td>${p.nombre}</td>
+            <td>${p.cantidad}</td>
+            <td>$${p.total.toLocaleString('es-CO')}</td>
+          </tr>`;
+        });
       });
-      html += `</table>`;
+      html += "</table>";
       tabla.innerHTML = html;
+      mostrarGrafico();
     }
 
-    function mostrarGraficas() {
-      const fechaSeleccionada = document.getElementById('fechaGrafica').value;
-      const ctx1 = document.getElementById('graficoProductos');
-      const ctx2 = document.getElementById('graficoVentas');
-      Chart.getChart(ctx1)?.destroy();
-      Chart.getChart(ctx2)?.destroy();
+    // ====== Gráfico ======
+    function mostrarGrafico() {
+      const ctx = document.getElementById('graficoVentas');
+      Chart.getChart(ctx)?.destroy();
+      const dia = historialPorDia[fechaActual] || [];
 
-      const datos = historial.filter(p => p.fecha === fechaSeleccionada);
-      const productosVendidos = {};
-      const ventasTotales = {};
+      const labels = dia.map(v => `Venta ${v.numeroVenta}`);
+      const totals = dia.map(v => v.productos.reduce((a,b)=>a+b.total,0));
 
-      datos.forEach(p => {
-        productosVendidos[p.nombre] = (productosVendidos[p.nombre] || 0) + p.total;
-        ventasTotales[p.numeroVenta] = (ventasTotales[p.numeroVenta] || 0) + p.total;
-      });
-
-      if (datos.length === 0) return;
-
-      new Chart(ctx1, {
+      new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: Object.keys(productosVendidos),
+          labels,
           datasets: [{
-            label: 'Ventas por Producto',
-            data: Object.values(productosVendidos),
-            backgroundColor: 'red'
+            label: `Total por venta (${fechaActual})`,
+            data: totals,
+            backgroundColor: '#ff4d4d'
           }]
         },
-        options: { scales: { y: { beginAtZero: true } } }
-      });
-
-      new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: Object.keys(ventasTotales).map(v => `Venta #${v}`),
-          datasets: [{
-            label: 'Total por Venta',
-            data: Object.values(ventasTotales),
-            backgroundColor: '#00ccff'
-          }]
-        },
-        options: { scales: { y: { beginAtZero: true } } }
+        options: {
+          scales: { y: { beginAtZero: true } }
+        }
       });
     }
 
-    function mostrarSeccion(seccion) {
-      document.getElementById('inicio').style.display = seccion === 'inicio' ? 'block' : 'none';
-      document.getElementById('ventas').style.display = seccion === 'ventas' ? 'block' : 'none';
-      document.getElementById('graficas').style.display = seccion === 'graficas' ? 'block' : 'none';
-      if (seccion === 'ventas') mostrarTabla();
-      if (seccion === 'graficas') mostrarGraficas();
+    // ====== Gestión de productos ======
+    function mostrarProductos() {
+      const cont = document.getElementById('tablaProductos');
+      if (Object.keys(productos).length === 0) {
+        cont.innerHTML = "<p>No hay productos.</p>";
+        return;
+      }
+
+      let html = `<table><tr><th>Producto</th><th>Precio</th><th>Acciones</th></tr>`;
+      for (const [nombre, precio] of Object.entries(productos)) {
+        html += `<tr>
+          <td>${nombre}</td>
+          <td>$${precio.toLocaleString('es-CO')}</td>
+          <td>
+            <button onclick="editarProducto('${nombre}')">✏️ Editar</button>
+            <button onclick="eliminarProducto('${nombre}')">❌ Eliminar</button>
+          </td>
+        </tr>`;
+      }
+      html += "</table>";
+      cont.innerHTML = html;
+    }
+
+    function agregarNuevoProducto() {
+      const nombre = document.getElementById('nuevoNombre').value.trim().toLowerCase();
+      const precio = parseInt(document.getElementById('nuevoPrecio').value);
+      if (!nombre || !precio) return alert("Completa los campos");
+
+      productos[nombre] = precio;
+      localStorage.setItem('productos', JSON.stringify(productos));
+      document.getElementById('nuevoNombre').value = '';
+      document.getElementById('nuevoPrecio').value = '';
+      mostrarProductos();
+    }
+
+    function editarProducto(nombre) {
+      const nuevoPrecio = prompt(`Nuevo precio para ${nombre}:`, productos[nombre]);
+      if (nuevoPrecio && !isNaN(nuevoPrecio)) {
+        productos[nombre] = parseInt(nuevoPrecio);
+        localStorage.setItem('productos', JSON.stringify(productos));
+        mostrarProductos();
+      }
+    }
+
+    function eliminarProducto(nombre) {
+      if (confirm(`¿Eliminar el producto ${nombre}?`)) {
+        delete productos[nombre];
+        localStorage.setItem('productos', JSON.stringify(productos));
+        mostrarProductos();
+      }
     }
   </script>
 </body>
